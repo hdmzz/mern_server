@@ -1,24 +1,36 @@
 import postModel from "../models/postModel.js";
 
 export const createPost = async (req, res) => {
-    const {title, message, author} = req.body
-    console.log(title);
-    console.log(message);
-    const newPost = new postModel({title, message, author})
-
+    const {title, message} = req.body;
+    const newPost = new postModel({title, message});
     try {
         await newPost.save()
-        return res.status(201).json({message: "post bien enregistré"})
+        res.status(201).json({message: "post bien enregistré"})
     } catch (error) {
-        return res.status(409).json(new Error(error))
+        res.status(409).json(new Error(error))
     }
+}
 
-    /* const post = req.body;
-    const newPost = new model(post);
+export const getPosts = async (req, res) => {
     try {
-        await newPost.save();
-        res.status(201).json(newPost);
+        postModel.find().then((data) => {
+            res.status(200).json(data)
+        })
     } catch (error) {
-        res.status(509).json({ message: error.message })
-    } */
+        res.status(500).send(new Error("database error sorry try again later"))
+    }
+}
+
+export const deletePost = (req, res) => {
+    postModel.deleteOne({_id: req.body.id}).then(info => {
+        console.log(info)
+        res.status(204).send(info)
+    })
+}
+
+export const updatePost = (req, res) => {
+    postModel.updateOne({ _id: req.body.id }, {$set: { title: req.body.title, message: req.body.message }})
+    .then(info => console.log(info))
+    .catch(error => console.log(error))
+
 }
