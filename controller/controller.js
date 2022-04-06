@@ -1,15 +1,25 @@
 import postModel from "../models/postModel.js";
 import { readFileSync, writeFileSync, readdirSync, appendFileSync, rmSync, existsSync, mkdirSync, writeFile } from "fs"
+import { title } from "process";
 
 
 export const createPost = async (req, res) => {
     try {
-
-
-        console.log('reqbody', req.body);
-
-        /* await newPost.save()
-        res.status(201).json({message: "post bien enregistré"}) */
+        console.log(req.file);
+        let imageUrl;
+        if (req.file) {
+            imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        }
+        const title = req.body.title
+        const message = req.body.message
+        console.log(req.body.title)
+        const newPost = new postModel({
+            title,
+            message,
+            imageUrl
+        })
+        await newPost.save().then(() => console.log('ok'))
+        res.status(201).json({message: "post bien enregistré"}) 
     } catch (error) {
         console.log(error);
         res.status(409).json(new Error(error))
