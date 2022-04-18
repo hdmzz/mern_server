@@ -5,10 +5,9 @@ import { title } from "process";
 
 export const createPost = async (req, res) => {
     try {
-        console.log(req.file);
         let imageUrl;
         if (req.file) {
-            imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+            imageUrl = `${req.protocol}://${req.get('host')}/resizedImage/${req.file.filename}`;
         }
         const title = req.body.title
         const message = req.body.message
@@ -37,8 +36,13 @@ export const getPosts = async (req, res) => {
 }
 
 export const deletePost = (req, res) => {
+    console.log(req.body);
+    //on doit resoudre l'url de l'image du post si il ya une image 
     postModel.deleteOne({_id: req.body.id}).then(info => {
-        console.log(info)
+        if (req.body.imageUrl) {
+            const url = req.body.imageUrl.slice(22)
+            rmSync(url)
+        }
         res.status(204).send(info)
     })
 }

@@ -6,6 +6,7 @@ import postRoutes from "./routes/posts.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const app = express();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use((req, res, next) => {
@@ -16,7 +17,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/images', express.static(path.join(__dirname, 'images')))
+app.use('/resizedImage', express.static(path.join(__dirname, 'resizedImage')))
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
